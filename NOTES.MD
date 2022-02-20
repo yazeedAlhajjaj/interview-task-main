@@ -31,8 +31,7 @@ Intellij idea ultimate
 
 ```
 Java NIO
-streams 
-Functions
+maven jar plugin to run code using command line
 ```
 
 - Mention down any difficulties or concerns you faced while working on the task. Your feedback is

@@ -99,8 +99,7 @@ public class NormalizerImplementation implements Normalizer {
     return temp;
   }
 
-  private void handleFileExceptions(Path csvPath, String colToModify)
-      throws IOException {
+  private void handleFileExceptions(Path csvPath, String colToModify) throws IOException {
     if (Files.notExists(csvPath)) {
       throw new IllegalArgumentException("source file not found");
     }
