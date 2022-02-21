@@ -23,14 +23,16 @@ public class ScoringSummaryImplementation implements ScoringSummary {
 
   @Override
   public BigDecimal mean() {
-    BigDecimal reduce =
-        values.stream().map(Objects::requireNonNull).reduce(BigDecimal.ZERO, BigDecimal::add);
-    size = values.size();
-    mean =
-        reduce
-            .divide(new BigDecimal(size), MathContext.DECIMAL32)
-            .setScale(0, RoundingMode.HALF_EVEN);
-    mean = mean.setScale(2, RoundingMode.HALF_EVEN);
+    if (mean==null) {
+      BigDecimal reduce =
+          values.stream().map(Objects::requireNonNull).reduce(BigDecimal.ZERO, BigDecimal::add);
+      size = values.size();
+      mean =
+          reduce
+              .divide(new BigDecimal(size), MathContext.DECIMAL32)
+              .setScale(0, RoundingMode.HALF_EVEN);
+      mean = mean.setScale(2, RoundingMode.HALF_EVEN);
+    }
     return mean;
   }
 
@@ -45,18 +47,20 @@ public class ScoringSummaryImplementation implements ScoringSummary {
 
   @Override
   public BigDecimal variance() {
-    if (mean == null) {
-      mean = mean();
+    if (variance==null) {
+      if (mean == null) {
+        mean = mean();
+      }
+      BigDecimal sum = BigDecimal.ZERO;
+      for (BigDecimal x : values) {
+        BigDecimal subtract = x.subtract(mean);
+        sum = sum.add(subtract.multiply(subtract));
+      }
+      variance =
+          sum.divide(BigDecimal.valueOf(size), MathContext.DECIMAL32)
+              .setScale(0, RoundingMode.HALF_EVEN);
+      variance = variance.setScale(2, RoundingMode.HALF_EVEN);
     }
-    BigDecimal sum = BigDecimal.ZERO;
-    for (BigDecimal x : values) {
-      BigDecimal subtract = x.subtract(mean);
-      sum = sum.add(subtract.multiply(subtract));
-    }
-    variance =
-        sum.divide(BigDecimal.valueOf(size), MathContext.DECIMAL32)
-            .setScale(0, RoundingMode.HALF_EVEN);
-    variance = variance.setScale(2, RoundingMode.HALF_EVEN);
     return variance;
   }
 
